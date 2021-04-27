@@ -34,11 +34,37 @@ public class Topic_06_Element {
 		WebElement Under18checkbox = driver.findElement(By.id("under_18"));
 		Assert.assertTrue(Under18checkbox.isDisplayed());
 		//verify Education is display
-		WebElement Educationlabel = driver.findElement(By.xpath("//label[@for='edu']"));
-		Assert.assertTrue(Educationlabel.isDisplayed());
+		WebElement Educationtxt = driver.findElement(By.id("edu"));
+		Assert.assertTrue(Educationtxt.isDisplayed());
 		//verify user5 is not display
 		WebElement user5 = driver.findElement(By.xpath("//*[text()='Name: User5']"));
 		Assert.assertFalse(user5.isDisplayed());
+		LogConsole("Name user5",user5.isDisplayed());
+		
+		if (Emailtextbox.isDisplayed()) {
+			Emailtextbox.sendKeys("Automation Testing");
+			LogConsole("Emailtextbox" , Emailtextbox.isDisplayed());
+		}
+		
+		if (Under18checkbox.isDisplayed()) {
+			Under18checkbox.click();
+			LogConsole("Under18checkbox" ,Under18checkbox.isDisplayed());
+		}
+		
+		if (Educationtxt.isDisplayed()) {
+			Educationtxt.sendKeys("Automation Testing");
+			LogConsole("Education textarea",Educationtxt.isDisplayed());
+		}
+
+	}
+	
+	
+	public void LogConsole(String string ,boolean Boolean){
+		if (Boolean) {
+			System.out.println(string + ": " + "Element is display");
+		}
+		else
+			System.out.println(string + ": " + "Element isnot display");
 	}
 	
 	@AfterClass
