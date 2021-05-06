@@ -12,16 +12,21 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.thoughtworks.selenium.webdriven.commands.Click;
+
 public class Topic_06_Element {
 	WebDriver driver;
 	WebElement element;
 	String projectpath = System.getProperty("user.dir");
+	By AgeUnder18Radio = By.id("under_18");
+	By languageJavaCheckbox = By.id("java");
 
 	@BeforeClass
 	public void beforeClass() {
 		System.setProperty("webdriver.chrome.driver",projectpath + "\\BrowserDriver\\chromedriver.exe");
 		driver = new ChromeDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.get("https://automationfc.github.io/basic-form/index.html");
 	}
 
 	@Test
@@ -129,6 +134,62 @@ public class Topic_06_Element {
 		LogConsole_IsEnable("slider_2",slider_2.isEnabled());
 	}
 	
+	
+	@Test
+	public void TC_03_verify_Element_IsSelected() {
+		ClickElement(AgeUnder18Radio);
+		ClickElement(languageJavaCheckbox);
+		
+		if(IsElementSelected(AgeUnder18Radio)) {
+		}
+		if(IsElementSelected(languageJavaCheckbox)) {
+		}
+		
+		ClickElement(languageJavaCheckbox);
+		if(IsElementSelected(languageJavaCheckbox)) {
+		}
+	}
+	
+	@Test
+	public void TC_05_Register_Function() {
+		driver.get("https://login.mailchimp.com/signup/");
+		By Email = By.id("email");
+		By username = By.id("new_username");
+		By password = By.id("new_password");
+		By singupbutton =  By.xpath("//button[@id='create-account']");
+		By marketing_newsletter = By.id("marketing_newsletter");
+		
+		Inputvalue(Email, "Testing@gmail.com");
+		Inputvalue(username, "Nam Nguyen");
+		Inputvalue(password, "1");
+		IsElementCompted(By.xpath("//li[contains(@class,'number-char')]"));
+		Assert.assertEquals(driver.findElement(singupbutton).isEnabled(), false);
+		Inputvalue(password, "a");
+		IsElementCompted(By.xpath("//li[contains(@class,'lowercase-char')]"));
+		Inputvalue(password, "A");
+		IsElementCompted(By.xpath("//li[contains(@class,'uppercase-char')]"));
+		Inputvalue(password, "@");
+		IsElementCompted(By.xpath("//li[contains(@class,'special-char')]"));
+		Inputvalue(password, "12345678");
+		IsElementCompted(By.xpath("//li[contains(@class,'8-char')]"));
+		ClickElement(marketing_newsletter);
+		if (IsElementSelected(marketing_newsletter)) {
+		}
+		
+		
+	}
+	
+	
+	public boolean IsElementCompted(By by) {
+		if (driver.findElement(by).getAttribute("class").contains("completed")) {
+			System.out.println(by + " Is satisfy");
+			return true;
+		} else {
+			System.out.println(by + " Isnot satisfy");
+			return false;
+		}
+	}
+	
 	public void LogConsole_IsDisplay(String string ,boolean Boolean){
 		if (Boolean) {
 			System.out.println(string + ": " + "Element is display");
@@ -145,12 +206,24 @@ public class Topic_06_Element {
 			System.out.println(string + ": " + "Element isnot Enable");
 	}
 	
-	public void LogConsole_IsSelected(String string ,boolean Boolean){
-		if (Boolean) {
-			System.out.println(string + ": " + "Element is selected");
+	
+	public boolean IsElementSelected(By by) {
+		if (driver.findElement(by).isSelected()) {
+			System.out.println(by + " Is selected");
+			return true;
+		} else {
+			System.out.println(by + " Isnot selected");
+			return false;
 		}
-		else
-			System.out.println(string + ": " + "Element isnot selected");
+	}
+	
+	public void Inputvalue (By by, String value) {
+		driver.findElement(by).clear();
+		driver.findElement(by).sendKeys(value);
+	}
+	
+	public void ClickElement(By by) {
+		driver.findElement(by).click();
 	}
 	
 	@AfterClass
