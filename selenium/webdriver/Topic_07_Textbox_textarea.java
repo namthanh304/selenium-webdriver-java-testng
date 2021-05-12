@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
 import org.openqa.selenium.remote.server.handler.GetPageSource;
+import org.openqa.selenium.server.browserlaunchers.Sleeper;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -33,7 +34,7 @@ public class Topic_07_Textbox_textarea {
 	
 	By Nametextbox = By.name("name");
 	By genderradio = By.xpath("//input[@name='rad1' and @value='m']");
-	By dobtextbox = By.name("dob");
+	By dobtextbox = By.id("dob");
 	By Addresstextbox = By.name("addr");
 	By Citytextbox = By.name("city");
 	By Statetextbox = By.name("state");
@@ -49,7 +50,7 @@ public class Topic_07_Textbox_textarea {
 		System.setProperty("webdriver.chrome.driver",projectpath + "\\BrowserDriver\\chromedriver.exe");
 		driver = new ChromeDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.get("http://demo.guru99.com/v4");
+		driver.get("https://demo.guru99.com/v4");
 		
 		Customermail = "Customer" + randomnumber() + "@gmail.com";
 		name = "John C";
@@ -74,7 +75,11 @@ public class Topic_07_Textbox_textarea {
 		
 		username = driver.findElement(By.xpath("//td[text()='User ID :']/following-sibling::td")).getText();
 		password = driver.findElement(By.xpath("//td[text()='Password :']/following-sibling::td")).getText();
+		
+		System.out.println(username);
+		System.out.println(password);
 	}
+	
 	
 	@Test
 	public void TC_02_login() {
@@ -104,13 +109,16 @@ public class Topic_07_Textbox_textarea {
 		driver.findElement(Statetextbox).sendKeys(state);
 		driver.findElement(PINtextbox).sendKeys(pin);
 		driver.findElement(MobileNumbertextbox).sendKeys(mobile);
-		driver.findElement(emailtextbox).sendKeys("Customermail");
+		driver.findElement(emailtextbox).sendKeys(Customermail);
 		driver.findElement(passtextbox).sendKeys("123456");
 		
 		driver.findElement(submitbutton).click();
 		
+		
+		Sleeper.sleepTightInSeconds(20);
+		
 		//verify info
-		Assert.assertEquals(driver.findElement(By.xpath("//p[@class='heading3']")).getText(), "Customer Registered Successfully!!!");
+		Assert.assertTrue(driver.findElement(By.xpath("//p[@class='heading3' and text()='Customer Registered Successfully!!!']")).isDisplayed());
 		CustomerID = driver.findElement(By.xpath("//td[text()='Customer ID']/following-sibling::td")).getText();
 		
 		Assert.assertEquals(driver.findElement(By.xpath("//td[text()='Customer ID']/following-sibling::td")), name);
