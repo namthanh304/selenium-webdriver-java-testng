@@ -23,7 +23,7 @@ import jdk.nashorn.internal.runtime.ListAdapter;
 public class Topic_07_dropdownlist {
 	WebDriver driver;
 	String projectpath = System.getProperty("user.dir");
-	String firstname, lastname, email;
+	String firstname, lastname, email , password, confirmpassword;
 	Select select;
 	
 	@BeforeClass
@@ -42,13 +42,17 @@ public class Topic_07_dropdownlist {
 		By LastNameTexbox = By.id("LastName");
 		By MailTexbox = By.id("Email");
 		By MaleGendercheckbox = By.id("gender-male");
+		By PasswordTextbox = By.id("Password");
+		By PasswordConfirmTextbox = By.id("ConfirmPassword");
+		By RegisterTexbox = By.id("register-button");
 		
 
 		
 
 		firstname = "testing";
 		lastname ="automation";
-		email = "automationtesting@gmail.com";
+		email = "automationtesting"+randomnumber()+"@gmail.com";
+		password = "123456";
 		
 		driver.findElement(Registermenu).click();
 		
@@ -66,16 +70,43 @@ public class Topic_07_dropdownlist {
 		driver.findElement(FirstNameTexbox).sendKeys(firstname);
 		driver.findElement(LastNameTexbox).sendKeys(lastname);
 		driver.findElement(MailTexbox).sendKeys(email);
+		driver.findElement(PasswordTextbox).sendKeys(password);
+		driver.findElement(PasswordConfirmTextbox).sendKeys(password);
 		
 		DayDropDown.selectByVisibleText("1");
 		MonthDropDown.selectByVisibleText("May");
 		YearDropDown.selectByVisibleText("1980");
+		
+		driver.findElement(RegisterTexbox).click();
+		Sleeper.sleepTightInSeconds(3);
+		
+		Assert.assertEquals(driver.findElement(By.xpath("//div[@class='result']")).getText(), "Your registration completed");
 
+		driver.findElement(By.xpath("//div[@class='header-links']//a[text()='My account']")).click();
+		
+		Sleeper.sleepTightInSeconds(3);
+		
+		DayDropDown = new Select(driver.findElement(By.name("DateOfBirthDay")));
+		MonthDropDown = new Select(driver.findElement(By.name("DateOfBirthMonth")));
+		YearDropDown = new Select(driver.findElement(By.name("DateOfBirthYear")));
+	
+		Assert.assertEquals(DayDropDown.getFirstSelectedOption().getText(), "1");
+		Assert.assertEquals(MonthDropDown.getFirstSelectedOption().getText(), "May");
+		Assert.assertEquals(YearDropDown.getFirstSelectedOption().getText(), "1980");
+		
+		
+		
 	}
 	
 	public void inputValue (By by, String value) {
 		driver.findElement(by).clear();
 		driver.findElement(by).sendKeys(value);
+	}
+	
+	public int randomnumber() {
+		Random random = new Random();
+		return random.nextInt();
+		
 	}
 	
 	@AfterClass
