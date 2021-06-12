@@ -23,11 +23,19 @@ import org.testng.annotations.Test;
 
 import com.thoughtworks.selenium.webdriven.commands.Click;
 
+import sun.security.ec.ECOperations;
+
 public class Topic_08_CustomDropdownlist {
 	WebDriver driver;
 	String projectpath = System.getProperty("user.dir");
 	WebDriverWait explicitiwait;
 	JavascriptExecutor jsexcutor;
+	String[] threemonth = {"May","July","April"};
+	
+	String[] Overthreemonth = {"May","July","April","June","October"};
+	
+	String [] twelvemothns = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+
 
 
 	@BeforeClass
@@ -39,6 +47,11 @@ public class Topic_08_CustomDropdownlist {
 		explicitiwait = new WebDriverWait(driver, 15);
 		
 		jsexcutor = (JavascriptExecutor) driver;
+		
+		String[] threemonth = {"May","July","April"};
+		
+		String[] Overthreemonth = {"May","July","April","June","October"};
+		
 
 	}
 	
@@ -69,7 +82,6 @@ public class Topic_08_CustomDropdownlist {
 		Assert.assertTrue(driver.findElement(By.xpath("//div[@role='listbox']//div[@class='divider text' and text()='Stevie Feliciano']")).isDisplayed());
 	}
 	
-	@Test
 	public void TC_03_Vuejs() {
 		driver.get("https://mikerodham.github.io/vue-dropdowns/");
 		SelectItem("//li[@class='dropdown-toggle']", "//ul[@class='dropdown-menu']/li/a", "Second Option");
@@ -80,6 +92,23 @@ public class Topic_08_CustomDropdownlist {
 		
 		SelectItem("//li[@class='dropdown-toggle']", "//ul[@class='dropdown-menu']/li/a", "Third Option");
 		Assert.assertTrue(driver.findElement(By.xpath("//li[@class='dropdown-toggle' and contains(text(),'Third Option')]")).isDisplayed());
+	}
+	
+	@Test
+	public void TC_04_multipleSelect() {
+		driver.get("http://multiple-select.wenzhixin.net.cn/templates/template.html?v=189&url=basic.html");
+		selectmultipleitem("(//div[@class='ms-parent multiple-select'])[1]/button", "(//div[@class='ms-parent multiple-select'])[1]//ul/li", threemonth);
+		verifyItemSelected(threemonth);
+		
+		driver.navigate().refresh();
+		
+		selectmultipleitem("(//div[@class='ms-parent multiple-select'])[1]/button", "(//div[@class='ms-parent multiple-select'])[1]//ul/li", Overthreemonth);
+		verifyItemSelected(Overthreemonth);
+		
+		driver.navigate().refresh();
+		
+		selectmultipleitem("(//div[@class='ms-parent multiple-select'])[1]/button", "(//div[@class='ms-parent multiple-select'])[1]//ul/li", twelvemothns);
+		verifyItemSelected(twelvemothns);
 	}
 	
 	
@@ -100,6 +129,64 @@ public class Topic_08_CustomDropdownlist {
 			}
 		}		
 	}
+	
+	public void selectmultipleitem(String dropdownlocator, String optionlist, String[] expecteditem){
+		//click open option
+		driver.findElement(By.xpath(dropdownlocator)).click();
+		
+		//wait all item display and get all item
+		List<WebElement> allitem = explicitiwait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(optionlist)));
+		
+		// loop for all item
+		for (WebElement item : allitem) {
+			for (String subitem : expecteditem) {
+				if (subitem.equals(item.getText())) {
+					jsexcutor.executeScript("arguments[0].scrollIntoView(true);", item);
+					Sleeper.sleepTightInSeconds(1);
+					
+					item.click();
+					Sleeper.sleepTightInSeconds(1);
+					
+					List<WebElement> itemSelected = driver.findElements(By.xpath("//li[@class='selected']//input"));
+					System.out.println("Item selected : "+ itemSelected.size());
+					if (itemSelected.size() == expecteditem.length) {
+						break;
+					}
+				}
+			}
+		}
+	
+	}
+	
+	public boolean verifyItemSelected (String[] month){
+		List<WebElement> ItemSelected = driver.findElements(By.xpath("//li[@class='selected']//input"));
+		int numberItem = ItemSelected.size();
+		
+		String allItemSelected = driver.findElement(By.xpath("(//div[@class='ms-parent multiple-select'])[1]/button/span")).getText();
+		System.out.println("Total Month are selected : "+ allItemSelected );
+		
+		if (numberItem <=3 && numberItem >0 ) {
+			boolean status = true;
+			for (String item : month) {
+				if (allItemSelected.contains(item)) {
+					status = true;
+				}
+				else {
+						status = false;
+					}
+				}
+			return status;
+		}
+		else if (numberItem > 3 && numberItem < 12) {
+			return driver.findElement(By.xpath("(//div[@class='ms-parent multiple-select'])[1]/button/span[text()='"+ numberItem + " of 12 selected']")).isDisplayed();
+		} else if (numberItem == 12) {
+			return driver.findElement(By.xpath("(//div[@class='ms-parent multiple-select'])[1]/button/span[text()='All selected']")).isDisplayed();
+		}
+	else {
+		return false;
+	}
+}
+	
 	
 	@AfterClass
 	public void afterClass() {
