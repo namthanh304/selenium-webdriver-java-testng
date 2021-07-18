@@ -24,8 +24,6 @@ import org.testng.annotations.Test;
 
 import com.thoughtworks.selenium.webdriven.commands.Click;
 
-import sun.security.ec.ECOperations;
-
 public class Topic_09_Alert {
 	WebDriver driver;
 	String projectpath = System.getProperty("user.dir");

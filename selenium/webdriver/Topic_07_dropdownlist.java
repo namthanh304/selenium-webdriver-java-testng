@@ -15,10 +15,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
-import jdk.nashorn.internal.runtime.ListAdapter;
-
 
 public class Topic_07_dropdownlist {
 	WebDriver driver;
